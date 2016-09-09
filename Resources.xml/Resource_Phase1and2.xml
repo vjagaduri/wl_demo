@@ -1,0 +1,415 @@
+<?xml version="1.0"?>
+<config version="1.0.0.0">
+
+  <!-- Weblogic AdminServer connection details -->
+  <connection> 
+    <prop name="admin-user" value="admin"  />
+    <prop name="admin-password" value="polaris123" />
+    <prop name="admin-host" value="10.10.7.15"  />
+    <prop name="admin-port" value="20019"  />
+  </connection>
+  
+  <param>
+    <prop name="db-user" value="CIBC_PHASE2_IMPL"  />
+    <prop name="db-password" value="CIBC_PHASE2_IMPL" />
+    <prop name="url" value="jdbc:oracle:thin:@10.10.7.60:1521:SIR10428"  />
+    <prop name="filestore" value="/usr1/SIR12116/GTB_HOME/IPSH_HOME/JMS_STORE1"/>
+  <!-- User the below for Cluster 
+    <prop name="filestore2" value="/usr15/SIR11025/mydomain/GTB_HOME/IPSH_HOME/JMS_STORE2" /> -->
+  <!-- Use Deployment ManagedServer Name for Single Server Deployment -->
+	<prop name="target" value="AdminServer" type="Servers" />
+  <!-- Use Cluster Name for Cluster Deployment 
+	<prop name="target" value="Cluster1" type="Clusters" />   -->
+  </param>
+   
+
+  <!-- To create a JDBC Datasource -->
+  <res name="bpspool" type="JDBCDatasource">
+    <prop name="Name" value="bpspool" />
+    <prop name="ConnectionReserveTimeoutSeconds" value="25" />
+    <prop name="MaxCapacity" value="50" />
+    <prop name="TestTableName" value="SQL SELECT 1 FROM DUAL" />
+    <prop name="JNDIName" value="bpspool" />
+    <prop name="Url" value="" />
+    <prop name="DriverName" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <prop name="Password" value="" />
+    <prop name="User" value="" />
+    <prop name="TwoPhaseCommit" value="EmulateTwoPhaseCommit" />
+    <prop name="target" value="" type="" />
+  </res> 
+  <res name="ipshpool" type="JDBCDatasource">
+    <prop name="Name" value="ipshpool" />
+    <prop name="ConnectionReserveTimeoutSeconds" value="25" />
+    <prop name="MaxCapacity" value="50" />
+    <prop name="TestTableName" value="SQL SELECT 1 FROM DUAL" />
+    <prop name="JNDIName" value="ipshpool" />
+    <prop name="Url" value="" />
+    <prop name="DriverName" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <prop name="Password" value=""/>
+    <prop name="User" value="" />
+    <prop name="TwoPhaseCommit" value="EmulateTwoPhaseCommit" />
+    <prop name="target" value="" type="" />
+  </res>
+<res name="pshintegratordatasource" type="JDBCDatasource">
+    <prop name="Name" value="pshintegratordatasource" />
+    <prop name="ConnectionReserveTimeoutSeconds" value="25" />
+    <prop name="MaxCapacity" value="50" />
+    <prop name="TestTableName" value="SQL SELECT 1 FROM DUAL" />
+    <prop name="JNDIName" value="pshintegratordatasource" />
+    <prop name="Url" value="" />
+    <prop name="DriverName" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <prop name="Password" value=""/>
+    <prop name="User" value="" />
+    <prop name="TwoPhaseCommit" value="EmulateTwoPhaseCommit" />
+    <prop name="target" value="" type="" />
+  </res>
+  <res name="paymentspool" type="JDBCDatasource">
+    <prop name="Name" value="paymentspool" />
+    <prop name="ConnectionReserveTimeoutSeconds" value="25" />
+    <prop name="MaxCapacity" value="50" />
+    <prop name="TestTableName" value="SQL SELECT 1 FROM DUAL" />
+    <prop name="JNDIName" value="paymentspool" />
+    <prop name="Url" value="" />
+    <prop name="DriverName" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <prop name="Password" value=""/>
+    <prop name="User" value="" />
+    <prop name="TwoPhaseCommit" value="EmulateTwoPhaseCommit" />
+    <prop name="target" value="" type="" />
+  </res>
+   <res name="payInquiryPool" type="JDBCDatasource">
+    <prop name="Name" value="payInquiryPool" />
+    <prop name="ConnectionReserveTimeoutSeconds" value="25" />
+    <prop name="MaxCapacity" value="50" />
+    <prop name="TestTableName" value="SQL SELECT 1 FROM DUAL" />
+    <prop name="JNDIName" value="payInquiryPool" />
+    <prop name="Url" value="" />
+    <prop name="DriverName" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <prop name="Password" value=""/>
+    <prop name="User" value="" />
+    <prop name="TwoPhaseCommit" value="EmulateTwoPhaseCommit" />
+    <prop name="target" value="" type="" />
+  </res>
+  
+  <!-- To create a FileStore for(JMS Server) -->
+ <res name="PSHIntegJmsFileStore" type="FileStore">
+    <prop name="Directory" value="" /> 
+    <prop name="target" value="" type="" />
+  </res>
+<!-- User the below for Cluster 
+  <res name="PaymentsStore2" type="FileStore">
+    <prop name="Directory" value="" /> 
+    <prop name="target" value="" type="" />
+  </res>
+-->
+
+  <!-- To create a JMS Server -->
+  <res name="PaymentServer" type="JMSServer">
+   <!-- <prop name="FileStore" value="PaymentsStore1" />-->
+    <prop name="target" value="" type="" />
+  </res>
+   <!-- To create a JMS Server -->
+  <res name="PSHIntegJMSServer" type="JMSServer">
+    <prop name="FileStore" value="PSHIntegJmsFileStore" />
+    <prop name="target" value="" type="" />
+  </res>
+<!-- User the below for Cluster 
+  <res name="PaymentServer2" type="JMSServer">
+    <prop name="FileStore" value="PaymentsStore2" />
+    <prop name="target" value="" type="" />
+  </res>
+-->
+
+  <!-- To create a JMS Module -->
+  <res name="PaymentsModule" type="JMSModule">
+    <prop name="target" value="Cluster1" type="Clusters" />
+  </res>
+   <!-- To create a JMS Module -->
+  <res name="PSHIntegJMSModule" type="JMSModule">
+    <prop name="target" value="Cluster1" type="Clusters" />
+  </res>
+ 
+  <res name="IPSH_BUS" type="SubDeployment">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="target" value="PaymentServer" type="JMSServers" />
+	<!-- User the below for Cluster 
+    <prop name="target" value="PaymentServer2" type="JMSServers" /> -->
+  </res>
+   <res name="PSHIntegJMSsub" type="SubDeployment">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="target" value="PSHIntegJMSServer" type="JMSServers" />
+	<!-- User the below for Cluster 
+    <prop name="target" value="PaymentServer2" type="JMSServers" /> -->
+  </res>
+
+  <!--  To create a ConnectionFactory in a JMS Module  --> 
+ <res name="jms_Connection_Factory" type="ConnectionFactory">
+  <prop name="JMSModule" value="PaymentsModule" /> 
+  <prop name="JNDIName" value="jms_Connection_Factory" /> 
+  <prop name="XA Connection Factory Enabled" value="true" /> 
+  <prop name="SubDeployment" value="IPSH_BUS" /> 
+  </res>
+ <res name="jms_Topic_Connection_Factory" type="ConnectionFactory">
+  <prop name="JMSModule" value="PaymentsModule" /> 
+  <prop name="JNDIName" value="jms_Topic_Connection_Factory" /> 
+  <prop name="SubDeployment" value="IPSH_BUS" /> 
+  </res>
+ <res name="CacheRefreshTopicConnectionFactory" type="ConnectionFactory">
+  <prop name="JMSModule" value="PaymentsModule" /> 
+  <prop name="JNDIName" value="CacheRefreshTopicConnectionFactory" /> 
+  <prop name="SubDeployment" value="IPSH_BUS" /> 
+  </res>
+  
+ <res name="ActionErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ActionErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+
+   <res name="AggregationErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="AggregationErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ActionQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ActionQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+    <prop name="ErrorDestination" value="ActionErrorQueue" />
+  </res>
+  <res name="AuditErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="AuditErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="AuditQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="AuditQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+    <prop name="ErrorDestination" value="AuditErrorQueue" />
+  </res>
+  <res name="DaemonErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="DaemonErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="DaemonQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="DaemonQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+    <prop name="ErrorDestination" value="DaemonErrorQueue" />
+  </res>
+  <res name="EngineErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="EngineErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="EngineQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="EngineQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+    <prop name="ErrorDestination" value="EngineErrorQueue" />
+  </res>
+  <res name="ipsh_Alerts_Queue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Alerts_Queue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_Jms_Error_Queue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Jms_Error_Queue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_Jms_Queue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Jms_Queue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+    <prop name="ErrorDestination" value="ipsh_Jms_Error_Queue" />
+  </res>
+    <res name="LG_Queue1" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="LG_Queue1" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="BPSTransQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="BPSTransQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="LINK_Queue1" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="LINK_Queue1" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_Jms_Feed_Queue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Jms_Feed_Queue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+ 
+  <res name="PSHIRespQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="PSHIRespQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="reference_Record_Queue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="reference_Record_Queue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="ControllerEodQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ControllerEodQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="InitialiseEodQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="InitialiseEodQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="PostEodQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="PostEodQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="PreEodQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="PreEodQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="AGGREGATIONQUEUE" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="AGGREGATIONQUEUE" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+	   <prop name="ErrorDestination" value="AggregationErrorQueue" />
+  </res>
+  <res name="CacheRefreshTopic" type="Topic">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="CacheRefreshTopic" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_Cache_Refresh_Topic" type="Topic">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Cache_Refresh_Topic" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_Global_Cache_Refresh_Topic" type="Topic">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_Global_Cache_Refresh_Topic" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+  <res name="ipsh_UI_Cache_Refresh_Topic" type="Topic">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ipsh_UI_Cache_Refresh_Topic" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+
+   <res name="PSHIntegJMSConnectionFactory" type="ConnectionFactory">
+  <prop name="JMSModule" value="PSHIntegJMSModule" /> 
+  <prop name="JNDIName" value="PSHIntegJMSConnectionFactory" /> 
+  <prop name="SubDeployment" value="PSHIntegJMSsub" /> 
+  </res>
+ <res name="PSHIElcmQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIElcmQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+  <res name="ELCMQueue" type="Queue">
+    <prop name="JMSModule" value="PaymentsModule" />
+    <prop name="JNDIName" value="ELCMQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="IPSH_BUS" />
+  </res>
+   <res name="PSHIElcmQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIElcmQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+
+<res name="PSHIEnvoyQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIEnvoyQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+  <res name="PSHIErrorQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIErrorQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+  <res name="PSHIFXBOOKRATEQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIFXBOOKRATEQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+   <res name="PSHIFXFwdQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIFXFwdQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+   <res name="PSHIFXGETRATEQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIFXGETRATEQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+
+   <res name="PSHIFXSPOTCONTQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIFXSPOTCONTQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+   <res name="PSHIRBFEEQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIRBFEEQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+<res name="PSHIRBPMTQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIRBPMTQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+  <res name="PSHIBulletinQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHIBulletinQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+  <res name="PSHECIFQueue" type="Queue">
+    <prop name="JMSModule" value="PSHIntegJMSModule" />
+    <prop name="JNDIName" value="PSHECIFQueue" />
+    <prop name="RedeliveryLimit" value="1" />
+    <prop name="SubDeployment" value="PSHIntegJMSsub" />
+  </res>
+
+</config>
