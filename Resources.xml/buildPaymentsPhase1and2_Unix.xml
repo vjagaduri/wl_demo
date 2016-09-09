@@ -1,0 +1,1323 @@
+<?xml version="1.0"?>
+
+<!--
+Version     : 1.0	
+Author    : Srinivas.Tanigundala 
+Description :BaseEar Build process
+DATE   : 23/10/15
+Modified  : Reena Jadhav
+-->
+
+<project default="main" basedir=".">
+   <!--craete the app-inf lib -->
+    <property name ="dirjar" location="./build/PSH/APP-INF/lib/ARMOR"/>
+	<property name ="dirapp" location="./build/PSH/APP-INF/lib/tempappinf"/>
+	<property name ="dirapplet" location="./build/PSH/APP-INF/lib/FRAMEWORK/"/>
+	<property name ="dirthirdparty" location="./build/PSH/APP-INF/lib/Thirdparty"/>
+	<property name ="dirbpsf" location="./build/PSH"/>
+	<property name ="dirtemp" location="./build/PSH/APP-INF/lib/tempwars"/>
+    <property name ="builddir"    location="./build/artifact" />
+	<property name ="src" location="./build/DIT/Payments/src/com" />
+	<property name ="mainsrc" location="./build/DIT" />
+
+    <property name="payCore" location="./build/DIT/PaymentsCore"/>
+	<property name ="srcPaymentsCore"    location="./build/DIT/PaymentsCore/src/com" />
+	<property name ="InquirySrc"    location="./build/DIT/PaymentInquiry/src/com" />
+	
+	<property name ="buildsrc"    location="./build/DIT/Payments/bin" />
+
+	<property name ="buildPaymentsCore"    location="./build/DIT/PaymentsCore/bin" />
+	<property name ="buildPaymentInquiry"    location="./build/DIT/PaymentInquiry/bin" />
+	<property name="payinq"	location="./build/DIT/PaymentInquiry"/>
+	
+	
+	<property name ="buildjars"    location="./build/lib" />
+	<property name="copy_HOME" location="./build/Build Scripts/DIT/Payments/src/com/igtb/psh" />
+    <property name="build_create" location="./build/Build Scripts/build" />
+    <property name="build_jar_create" location="./build/Build Scripts/build/jars" />
+    <property name="build_classes_create" location="./build/Build Scripts/build/classes" />  
+    <property name="srcimpl"	location="./build/Build Scripts/DIT/Payments"/>
+	<property name="prophome"	location="./build/Build Scripts/DIT/Properties"/>
+	<property name="release"	location="./build/Build Scripts/Release"/>
+	<property name="buildclasses"	location="./build/Build Scripts/build/classes"/>
+    <property name="buildclassesmdb"	location="./build/Build Scripts/build/classes"/>
+	<property name="eodsrc"	location="./build/DIT/Payments/src/com"/>
+	<property name="eodbuildclasses"	location="./build/DIT/Payments/src"/>
+	<property name="ibansrc"	location="./build/TEST_IBAN"/>
+    <property name="ibanclasses"	location="./build/TEST_IBAN/bin"/>
+	<property name="Extrajars"	location="./build/PSH/APP-INF/lib"/>
+	<property name="bestdir"	location="./build/DIT/Payments/src/com/igtb"/>
+	<property name="warjsp"	location="./build/DIT/Payments/WebContent/BPS_jsp"/>
+	<property name="warjs"	location="./build/DIT/Payments/WebContent/BPS_js"/>
+	<property name="paymentjs"	location="./build/DIT/Payments/WebContent/Payments_js"/>
+	<property name="warimg"	location="./build/DIT/Payments/WebContent/image"/>
+	<property name="warjsp1"	location="./build/DIT/Payments/WebContent/ipsh_jsp"/>
+	<property name="warjsp2"	location="./build/DIT/Payments/WebContent/ipsh_js"/>
+	<property name="eodcopy"	location="./build/DIT/Payments/src/resources"/>
+	<property name="copyprop"	location="./build"/>
+	<property name="copyprops"	location="./build/PSH/APP-INF/lib/FRAMEWORK"/>
+	<property name="aggrtn"	location="./build/DIT/Payments/src/com/igtb/aggregation"/>
+	<property name="buildjsp"	location="./build/DIT/Payments/WebContent"/>
+	<property name="ibanclasses"	location="./build/TEST_IBAN/bin"/>
+	<property name="bpcs"	location="./build/DIT/Payments/WebContent/BPS_css"/>
+	<property name="addacc"	location="./build/DIT/BBD/Service"/>
+	<property name="paymgt"	location="./build/DIT/PaymentManagement"/>
+	<property name="build"	location="./build/BUILD"/>
+	 
+	 <target name="main" >
+
+		<mkdir dir="./build/BUILD" />
+	 	<antcall target="Ext" />
+		
+		<antcall target="copyarmor" /> 
+		
+		<antcall target="configpreparation" /> 
+		<antcall target="copyframework" />
+		<antcall target="copythirdparty" />
+		<antcall target="copyNotRequired" />
+		
+	   	<antcall target="copy_HOME" />
+        <antcall target="prop_HOME" />
+		<antcall target="build_create1" />
+	    <antcall target="build_jar_create1" />
+	    <antcall target="build_classes_create1" />
+		<antcall target="compilenotify" />
+		
+		<antcall target="build_iban" />
+	
+		<antcall target="copy_mainsrc" />
+		
+		<antcall target="mainCompile" />
+			
+		<antcall target="all" />
+		<antcall target="utilcompile" />
+		
+	    <antcall target="preparePaymentsCorejar" />
+		<antcall target="buildPaymentsCore" />
+
+		<antcall target="eodcomplie" />
+		<antcall target="eodjobs" />
+		<antcall target="CopyResEOD" />
+
+		<antcall target="preparePaymentsjar" />
+		<antcall target="buildpayments" />
+		<antcall target="paymentMangement" />
+
+		<antcall target="prepareinquiryjar" />
+		<antcall target="buildInquiry" />
+		<antcall target="PaymentInquiry" />
+	 
+		<antcall target="reportssrc" />
+		<antcall target="Ireports" />
+		<antcall target="copyjsp" />
+		<antcall target="copybpswars" />
+		<antcall target="copywars" />
+		<antcall target="copyejbs" />
+		
+	    <antcall target="copypaymentjars" />
+  		<antcall target="prepareIPSHEAR" />
+
+	</target>
+	 
+
+
+<target name="Ext">
+
+ <unzip src="./build/PSH/PSH.txt" dest="./build/PSH/PSH.zip">
+    <patternset>
+        <include name="**"/>
+    </patternset>
+    
+</unzip>
+<move todir="./build">
+    <fileset dir="./build/PSH/PSH.zip"/>
+  </move>
+ <delete file="./build/PSH/PSH.txt" />
+
+
+ </target>
+
+	
+<target name="copyarmor" >
+		<echo message="copy armor jars in lib folder "/>
+		
+<mkdir dir="./build/PSH/APP-INF/lib/tempappinf" />
+		<copy todir="${dirapp}" >  
+		        <fileset dir="${dirjar}" includes="**/*.jar"/>  		</copy>
+       	</target>
+			
+<target name="copyframework" >
+		<echo message="create the db appletjar "/>
+
+		<jar jarfile="${dirapp}/DBApplet.jar" 
+			 basedir="${dirapplet}/DBApplet">
+
+			   </jar>
+
+<echo message="create the db DBCommonjar "/>
+<jar jarfile="${dirapp}/DBCommon.jar" 
+			 basedir="${dirapplet}/DBCommon">
+			   </jar>
+<echo message="create the db DBWebjar "/>
+<jar jarfile="${dirapp}/DBWeb.jar" 
+			 basedir="${dirapplet}/DBWeb">
+			   </jar>
+<echo message="create the db DEBatchUploadjar "/>
+<jar jarfile="${dirapp}/DEBatchUpload.jar" 
+			 basedir="${dirapplet}/DEBatchUpload">
+			   </jar>
+<echo message="create the db ExchangeRate "/>
+<jar jarfile="${dirapp}/ExchangeRate.jar" 
+			 basedir="${dirapplet}/ExchangeRate">
+			   </jar>
+<echo message="create the db IntellectLinkClientService "/>
+<jar jarfile="${dirapp}/IntellectLinkClientService.jar" 
+			 basedir="${dirapplet}/IntellectLinkClientService">
+			   </jar>
+<echo message="create the db IntellectLinkCommon "/>
+<jar jarfile="${dirapp}/IntellectLinkCommon.jar" 
+			 basedir="${dirapplet}/IntellectLinkCommon">
+			   </jar>
+<echo message="create the db IntellectLinkServer "/>
+<jar jarfile="${dirapp}/IntellectLinkServer.jar" 
+			 basedir="${dirapplet}/IntellectLinkServer">
+			   </jar>
+<echo message="create the db intellectlogger-1.0 "/>
+<jar jarfile="${dirapp}/intellectlogger-1.0.jar" 
+			 basedir="${dirapplet}/intellectlogger-1.0">
+			   </jar>
+<echo message="create the db intellectwrapper.0 "/>
+<jar jarfile="${dirapp}/intellectwrapper.jar" 
+			 basedir="${dirapplet}/intellectwrapper">
+			   </jar>
+<echo message="create the db IPSH-Engine "/>
+<jar jarfile="${dirapp}/IPSH-Engine.jar" 
+			 basedir="${dirapplet}/IPSH-Engine">
+			   </jar>
+<echo message="create the db IPSHGateway "/>
+<jar jarfile="${dirapp}/IPSHGateway.jar" 
+			 basedir="${dirapplet}/IPSHGateway">
+			   </jar>
+<echo message="create the db iqa "/>
+<jar jarfile="${dirapp}/iqa.jar" 
+			 basedir="${dirapplet}/iqa">
+			   </jar>
+<echo message="create the db IwAppCommon "/>
+<jar jarfile="${dirapp}/IwAppCommon.jar" 
+			 basedir="${dirapplet}/IwAppCommon">
+			   </jar>
+<echo message="create the db IwAppDataStore "/>
+<jar jarfile="${dirapp}/IwAppDataStore.jar" 
+			 basedir="${dirapplet}/IwAppDataStore">
+			   </jar>
+<echo message="create the db IwAppEntity "/>
+<jar jarfile="${dirapp}/IwAppEntity.jar" 
+			 basedir="${dirapplet}/IwAppEntity">
+			   </jar>
+<echo message="create the db IwAppMessages "/>
+<jar jarfile="${dirapp}/IwAppMessages.jar" 
+			 basedir="${dirapplet}/IwAppMessages">
+			   </jar>
+<echo message="create the db IwAppUtil "/>
+<jar jarfile="${dirapp}/IwAppUtil.jar" 
+			 basedir="${dirapplet}/IwAppUtil">
+			   </jar>
+<echo message="create the db IwCommon "/>
+<jar jarfile="${dirapp}/IwCommon.jar" 
+			 basedir="${dirapplet}/IwCommon">
+			   </jar>
+<echo message="create the db IWCTSHANDOFF "/>
+<jar jarfile="${dirapp}/IWCTSHANDOFF.jar" 
+			 basedir="${dirapplet}/IWCTSHANDOFF">
+			   </jar>
+<echo message="create the db IwEntity "/>
+<jar jarfile="${dirapp}/IwEntity.jar" 
+			 basedir="${dirapplet}/IwEntity">
+			   </jar>
+<echo message="create the db IwExportTable "/>
+<jar jarfile="${dirapp}/IwExportTable.jar" 
+			 basedir="${dirapplet}/IwExportTable">
+			   </jar>
+<echo message="create the db IwFactory "/>
+<jar jarfile="${dirapp}/IwFactory.jar" 
+			 basedir="${dirapplet}/IwFactory">
+			   </jar>
+<echo message="create the db IwMaintAppCommon "/>
+<jar jarfile="${dirapp}/IwMaintAppCommon.jar" 
+			 basedir="${dirapplet}/IwMaintAppCommon">
+			   </jar>
+<echo message="create the db IwMessages "/>
+<jar jarfile="${dirapp}/IwMessages.jar" 
+			 basedir="${dirapplet}/IwMessages">
+			   </jar>
+<echo message="create the db IwUtil "/>
+<jar jarfile="${dirapp}/IwUtil.jar" 
+			 basedir="${dirapplet}/IwUtil">
+			   </jar>
+<echo message="create the db LetterGeneration "/>
+<jar jarfile="${dirapp}/LetterGeneration.jar" 
+			 basedir="${dirapplet}/LetterGeneration">
+			   </jar>
+<echo message="create the db MLCommon "/>
+<jar jarfile="${dirapp}/MLCommon.jar" 
+			 basedir="${dirapplet}/MLCommon">
+			   </jar>
+<echo message="create the db MLWeb "/>
+<jar jarfile="${dirapp}/MLWeb.jar" 
+			 basedir="${dirapplet}/MLWeb">
+			   </jar>
+<echo message="create the db PAReport "/>
+<jar jarfile="${dirapp}/PAReport.jar" 
+			 basedir="${dirapplet}/PAReport">
+			   </jar>
+<echo message="create the db PAReportCommon "/>
+<jar jarfile="${dirapp}/PAReportCommon.jar" 
+			 basedir="${dirapplet}/PAReportCommon">
+			   </jar>
+<echo message="create the db ReportDependency "/>
+<jar jarfile="${dirapp}/ReportDependency.jar" 
+			 basedir="${dirapplet}/ReportDependency">
+			   </jar>
+<echo message="create the db ServiceUtil "/>
+<jar jarfile="${dirapp}/ServiceUtil.jar" 
+			 basedir="${dirapplet}/ServiceUtil">
+			   </jar>
+<echo message="create the db UserMessagesProperties "/>
+<jar jarfile="${dirapp}/UserMessagesProperties.jar" 
+			 basedir="${dirapplet}/UserMessagesProperties">
+			   </jar>
+<echo message="create the db vigilCommon "/>
+<jar jarfile="${dirapp}/vigilCommon.jar" 
+			 basedir="${dirapplet}/vigilCommon">
+			   </jar>
+<echo message="create the db vigilGiServer "/>
+<jar jarfile="${dirapp}/vigilGiServer.jar" 
+			 basedir="${dirapplet}/vigilGiServer">
+			   </jar>
+<echo message="create the db WFAppCommon "/>
+<jar jarfile="${dirapp}/WFAppCommon.jar" 
+			 basedir="${dirapplet}/WFAppCommon">
+			   </jar>
+<echo message="create the db WFCommon "/>
+<jar jarfile="${dirapp}/WFCommon.jar" 
+			 basedir="${dirapplet}/WFCommon">
+			   </jar>
+<echo message="create the db WFExt "/>
+<jar jarfile="${dirapp}/WFExt.jar" 
+			 basedir="${dirapplet}/WFExt">
+			   </jar>
+<echo message="create the db WFWeb "/>
+<jar jarfile="${dirapp}/WFWeb.jar" 
+			 basedir="${dirapplet}/WFWeb">
+			   </jar>
+<echo message="create the db Config "/>
+<jar jarfile="${dirapp}/Config.jar" 
+			 basedir="${copyprops}/Config">
+</jar>
+ </target>
+
+<target name="prepareCBFT" >
+<mkdir dir="${buildcbftsrc}" />
+		<echo message="Compilation of Inquiry source code for jar creation "/>
+        <javac srcdir="${cbftsrc}"
+		             destdir="${buildcbftsrc}"
+		             includes="**/*.java"
+					 excludes ="**/iban/"
+					 failonerror="true"
+		 			 optimize="${optimize}"
+		 		 	 includeantruntime="false"
+					 debug="on" debuglevel="lines,vars,source">
+<classpath refid="project.class.path"/>
+<classpath refid="project.class.path.allclass"/>	
+</javac>
+</target>
+	
+<target name ="buildcbft">
+	<echo message="prepration  of Inquiry  jar file "/>
+	<jar jarfile="${dirbpsf}/APP-INF/lib/CBFT/cbft.jar" compress="true">
+		<fileset dir="${buildcbftsrc}">
+		    <include name="**/*.class" />		
+			 <exclude name="com/polaris/ipsh/scheduler/ParseMTRequest.class" /> 
+		</fileset>	 
+	</jar>
+	
+<mkdir dir="./build/PSH/APP-INF/lib/Build/IPSH-Engine" />
+
+<unjar src="./build/PSH/APP-INF/lib/tempappinf/IPSH-Engine.jar"
+				       dest="./build/PSH/APP-INF/lib/Build/IPSH-Engine">
+</unjar>
+
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/scheduler" >  
+		        <fileset dir="${buildcbftsrc}/com/polaris/ipsh/scheduler" includes="ParseMTRequest.class"/>		</copy>
+
+<jar jarfile="./build/PSH/APP-INF/lib/tempappinf/IPSH-Engine.jar" compress="true">
+			        <fileset dir="./build/PSH/APP-INF/lib/Build/IPSH-Engine">
+		 		        <include name="**/*.class" />
+						<include name="**/*.properties" />
+					</fileset>	 
+				</jar>
+</target>
+
+
+
+<target name="copycbftjar" >
+		<echo message="copy cbft in ear "/>
+		<copy todir="${dirbpsf}/APP-INF/lib/CBFT" >
+	        <fileset dir="${buildjars}" includes="**"/></copy>
+	    <copy todir="${dirbpsf}/APP-INF/lib/CBFT" >
+	        <fileset dir="${buildjars}" includes="Inquiry.jar"/></copy>
+		<copy todir="${dirtemp}/APP-INF/lib" >  
+		    <fileset dir="${dirbpsf}/APP-INF/lib/CBFT" includes="/*.jar" />  		</copy>        
+       	<copy todir="${dirapp}" >
+		    <fileset dir="${dirbpsf}/APP-INF/lib/CBFT" includes="/*.jar" />  		</copy>
+
+</target>
+
+<target name="copythirdparty" >
+	<echo message="copy thirdparty jars in lib folder "/>
+		<copy todir="${dirapp}" >  
+		        <fileset dir="${dirthirdparty}" includes="**"/>  		</copy>
+
+</target>
+<target name="copyNotRequired" >
+	<echo message="copy extra  jars in lib folder "/>
+	<copy todir="${dirapp}" >  
+		        <fileset dir="${Extrajars}/NotRequired" includes="**"/>  		</copy>
+
+</target>
+<path id="project.class.path">
+	           <fileset dir="${buildjars}">
+			                <include name="**/*.jar" />				
+			        </fileset>
+	  </path>
+	  <path id="project.class.path.eod">
+	           <fileset dir="${build_jar_create}">
+			                <include name="**/*eodframework.jar" />				
+			        </fileset>
+	  </path>
+	 
+
+<path id="project.class.path.payment">
+	  <fileset dir="${dirbpsf}/APP-INF/lib/Payments">
+			                <include name="Payments.jar" />				
+			            </fileset>
+						</path>
+<path id="project.new.path">
+<fileset dir="./build/DIT/Payments/lib">
+			                <include name="**/*.jar" />				
+			            </fileset>
+</path>
+
+<path id="project.class.path.PaymentsCore">
+<fileset dir="${dirbpsf}/APP-INF/lib/PaymentsCore">
+			                <include name="PaymentsCore.jar" />				
+			            </fileset>
+</path>
+<path id="project.new.class.path.PaymentsCore">
+<fileset dir="./build/DIT/PaymentsCore/lib">
+			                <include name="**/*.jar" />				
+			            </fileset>
+</path>
+
+<path id="project.class.path.EODJobs">
+	  <fileset dir="${build_jar_create}">
+			    <include name="EODJobs.jar" />				
+			            </fileset>
+</path>
+
+<path id="project.class.path.allclass">
+<fileset dir="${build_jar_create}">
+			    <include name="allclass.jar" />				
+			            </fileset>
+</path>
+
+<path id="project.class.path.Psh_Util">
+	  <fileset dir="${build_jar_create}">
+			    <include name="Psh_Util.jar" />				
+			            </fileset>
+</path>
+
+<path id="project.class.path.paymentimpl">
+	  <fileset dir="${release}/jar">
+			                <include name="PaymentsImpl.jar" />				
+			            </fileset>
+</path>
+
+ <path id="project.class.path.Notifiy">
+	  <fileset dir="${build_jar_create}">
+			                <include name="Notification.jar" />				
+			            </fileset>
+						</path>
+<target name="build_iban" >
+
+		<echo message="compilation of iban jar file "/>
+        <javac srcdir="${ibansrc}/src"
+		             destdir="${ibanclasses}"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>		 	
+		  </javac>		
+  <copy todir="${ibanclasses}" >  
+		        <fileset dir="${ibansrc}/WebContent"  includes="**"/>  
+				</copy>
+
+<jar jarfile="${dirbpsf}/APP-INF/lib/IBAN/IBAN.jar" compress="true">
+			        <fileset dir="${ibanclasses}">
+		 		        <include name="**" />
+			             </fileset>	 
+				</jar>
+	
+	</target>
+
+<target name="preparePaymentsjar" >
+<mkdir dir="./build/DIT/Payments/bin" />
+		<echo message="compilation of payments jar file "/>
+        <javac srcdir="${src}/"
+		             destdir="${buildsrc}"
+		             includes="**/*.java"
+					 excludes ="**/iban/  **/igtb/"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+					  deprecation="true"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>
+			<classpath refid="project.class.path.PaymentsCore"/>
+			<classpath refid="project.class.path.EODJobs"/>
+			<classpath refid="project.class.path.paymentimpl"/>
+			<classpath refid="project.class.path.eod"/>
+			<classpath refid="project.class.path.Psh_Util"/>			
+			<compilerarg value="-Xlint" />
+		  </javac>
+		  <copy todir="${buildsrc}/com/intellect/payments/fileProcessing/reporting/jasper/" >  
+		        <fileset dir="${src}/intellect/payments/fileProcessing/reporting/jasper/"  includes="**"/>  
+		  </copy>
+	</target>
+	<target name ="buildpayments">
+	<echo message="prepration  of payments  jar file "/>
+	<jar jarfile="${dirbpsf}/APP-INF/lib/Payments/Payments.jar" compress="true">
+			        <fileset dir="${buildsrc}">
+		 		        <include name="**/*.class" />
+					<include name="**/*.jrxml" />
+					<include name="**/*.jasper" />
+						 <exclude name="com/polaris/ipsh/re/service/ServiceImpl.class" /> 
+						 <!-- Changes For File Inquiry-->
+						  <exclude name="com/polaris/ipsh/maintenance/enquiry/dao/EnquiryDAO.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/dao/TransactionEnquiryDAO.class" /> 
+						  <exclude name="com/polaris/ipsh/maintenance/enquiry/dao/EnquiryDTO.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/dao/TransactionEnquiryDTO.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/helper/EnquiryHelper.class" /> 
+						<exclude name="com/polaris/ipsh/constants/PHConstants.class" /> 
+						<exclude name="com/polaris/ipsh/baseaction/BaseIPSHAction.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/action/EnquiryAction.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/action/FileEnquiryAction.class" /> 
+						<exclude name="com/polaris/ipsh/maintenance/enquiry/action/TransactionEnquiryAction.class" /> 
+						<exclude name="com/polaris/ipsh/constants/FileInquiryConstants.class" /> 
+					</fileset>	 
+				</jar>
+
+<mkdir dir="./build/PSH/APP-INF/lib/Build/IPSH-Engine" />
+
+<unjar src="./build/PSH/APP-INF/lib/tempappinf/IPSH-Engine.jar"
+				       dest="./build/PSH/APP-INF/lib/Build/IPSH-Engine">
+</unjar>
+
+	
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/maintenance/enquiry/dao" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/maintenance/enquiry/dao" includes="EnquiryDAO.class"/>		</copy>
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/maintenance/enquiry/dao" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/maintenance/enquiry/dao" includes="TransactionEnquiryDAO.class"/>		</copy>
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/maintenance/enquiry/dto" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/maintenance/enquiry/dto" includes="EnquiryDTO.class"/>		</copy>
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/maintenance/enquiry/dto" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/maintenance/enquiry/dto" includes="TransactionEnquiryDTO.class"/>		</copy>
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/maintenance/enquiry/helper" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/maintenance/enquiry/helper" includes="EnquiryHelper.class"/>		</copy>
+  <copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/constants" >  
+		        <fileset dir="${buildsrc}/com/polaris/ipsh/constants" includes="FileInquiryConstants.class"/>		</copy>
+	<copy todir="./build/PSH/APP-INF/lib/Build/IPSH-Engine/com/polaris/ipsh/properties" >  
+		        <fileset dir="./build/config/ipsh/properties" includes="GenericPaymentsConstants.properties"/>		</copy>
+
+
+<jar jarfile="./build/PSH/APP-INF/lib/tempappinf/IPSH-Engine.jar" compress="true">
+			        <fileset dir="./build/PSH/APP-INF/lib/Build/IPSH-Engine">
+		 		        <include name="**/*.class" />
+						<include name="**/*.properties" />
+					</fileset>	 
+				</jar>
+</target>
+
+<target name="prepareinquiryjar" >
+<mkdir dir="${buildPaymentInquiry}" />
+		<echo message="Compilation of Inquiry source code for jar creation "/>
+        <javac srcdir="${InquirySrc}"
+		             destdir="${buildPaymentInquiry}"
+		             includes="**/*.java"
+					 excludes ="**/iban/"
+					 failonerror="true"
+		 			 optimize="${optimize}"
+		 		 	 includeantruntime="false"
+					 debug="on" debuglevel="lines,vars,source">
+<classpath refid="project.class.path"/>
+<classpath refid="project.class.path.payment"/> 		
+</javac>
+</target>
+	
+<target name ="buildInquiry">
+	<echo message="prepration  of Inquiry  jar file "/>
+	<mkdir dir="${dirbpsf}/APP-INF/lib/PaymentInquiry" />
+	<jar jarfile="${dirbpsf}/APP-INF/lib/PaymentInquiry/Inquiry.jar" compress="true">
+		<fileset dir="${buildPaymentInquiry}">
+		    <include name="**/*.class" />						
+			<exclude name="com/intellect/ev/common/util/DB/DBResourceProviderFactory.class" />
+			<exclude name="com/intellect/ev/common/util/DB/DBResourceProvider.class" />
+		</fileset>	 
+	</jar>
+</target>
+
+<target name="preparePaymentsCorejar" >
+<mkdir dir="./build/DIT/PaymentsCore/bin" />
+		<echo message="compilation of PaymentsCore  jar file "/>
+        <javac srcdir="${srcPaymentsCore}/intellect"
+		             destdir="${buildPaymentsCore}"
+		             includes="**/*.java"
+					 excludes="**/iban/" 
+					 failonerror="true"
+					 classpathref="project.class.path"
+		 			 optimize="${optimize}"
+					 deprecation="true"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source">
+<classpath refid="project.class.path"/>
+<classpath refid="project.class.path.allclass"/>
+<compilerarg value="-Xlint" />		
+</javac>
+<mkdir dir="${dirbpsf}/APP-INF/lib/PaymentsCore" />
+</target>
+
+
+<target name ="buildPaymentsCore">
+	<echo message=" prepration of PaymentsCore jar file "/>
+	<jar jarfile="${dirbpsf}/APP-INF/lib/PaymentsCore/PaymentsCore.jar" compress="true">
+			        <fileset dir="${buildPaymentsCore}">
+		 		        <include name="**/*.class" />						
+		             </fileset>	 
+	</jar>
+</target>
+
+		
+	<target name="copy_mainsrc">
+	 <mkdir dir="${mainsrc}/mainsrc" />
+		<echo message="copy mainsrc Started"/>
+        <copy todir="${mainsrc}/mainsrc" >  
+	        <fileset dir="./build/DIT/Payments/src/"  /> 
+		</copy>
+		<copy todir="${mainsrc}/mainsrc" >  
+	        <fileset dir="./build/DIT/PaymentsCore/src/" /> 
+		</copy>
+		<echo message="copy_mainsrc ended"/>
+	</target>
+	
+	<target name="copy_HOME">
+		<echo message="copy_HOME Started"/>
+        <copy todir="./build/Build Scripts/DIT/Payments/src/com/igtb" >  
+		        <fileset dir="${bestdir}"  excludes="**/batch/ **/reports/ **/mail/ **/deliverable/ **/sqlbuilder/ **/simulator/ **/sql/ **/jsp/"/> 
+				</copy>
+				<echo message="copy_HOME ended"/>
+				</target>
+<echo message="Copying the properties into prop"/>
+<target name="prop_HOME">
+<echo message="PROP_HOME Started"/>
+ <copy todir="./build/Build Scripts/DIT/Payments/src/Properties" >  
+		        <fileset dir="./build/DIT/Payments/src/com/igtb/psh/impl/common/resources" includes="*.properties" />  
+				</copy>
+				
+				<copy todir="./build/Build Scripts/DIT/Payments/src/Properties" >  
+		        <fileset dir="./build/DIT/Payments/src/com/igtb/psh/impl/interfaces/resources" includes="*.properties" />  
+				</copy>
+				<echo message="PROP_HOME ended"/>
+				</target>
+				<target name="build_create1">
+ <echo message="creating the build" />
+ <mkdir dir="${build_create}" />
+ </target>
+  <target name="build_jar_create1">
+ <echo message="creating the build and jar" />
+ <mkdir dir="${build_jar_create}" />
+ </target>
+  <target name="build_classes_create1">
+ <echo message="creating the build and classes" />
+ <mkdir dir="${build_classes_create}" />
+ </target>
+  <target name="disk1">
+ <echo message="creating the disk" />
+ <mkdir dir="${disk1}" />
+ </target>
+
+
+ <target name="all" depends="init,jars,cleanImpl" />
+	<target name="init" >
+		<echo>
+			Start Build....
+		</echo>
+	
+	<mkdir dir="${release}"/>
+	<mkdir dir="${release}/jar"/>
+	<mkdir dir="${release}/property"/>
+	
+	<copy todir="${prophome}" flatten="true">
+		<fileset dir="${srcimpl}/">
+			<include name="**/*.properties"/>
+		</fileset>
+	</copy>
+	
+		<javac		srcdir="${srcimpl}"
+		            destdir="${buildclasses}"
+					excludes ="**/simulator/"
+		            includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="true"
+		>
+		<compilerarg value="-Xlint" />
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+			
+	</javac>
+	
+	</target>
+	
+	<target name="jars" depends="init">	
+		<jar jarfile="${build}/PaymentsImpl.jar" 
+			 includes="**"
+			 excludes="**/mdb/"
+			 basedir="${buildclasses}">
+		</jar>	
+		<jar jarfile="${build}/PaymentsImplMDB.jar" 
+			 includes="**/mdb/*"
+			 basedir="${buildclasses}">
+			  <metainf  dir="${srcimpl}/src/com/igtb/psh/impl/config/xmls" includes="**/ejb-jar.xml" />
+			  <metainf  dir="${srcimpl}/src/com/igtb/psh/impl/config/xmls" includes="**/weblogic-ejb-jar.xml" />
+		</jar>
+		
+	</target>
+	
+	<target name="rel" depends="jars">
+		<copy todir="${release}/jar" flatten="true">
+			<fileset dir="${build}/">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${release}/property" flatten="true">
+			<fileset dir="${prophome}/">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+
+  <copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${release}/jar" includes="*.jar" excludes="PaymentsImplMDB.jar" />  		</copy>
+        <copy todir="${dirtemp}" >  
+		        <fileset dir="${release}/jar" includes="*.jar" excludes="PaymentsImpl.jar"/>  		</copy>		
+<echo>
+			copy file from release/jars
+		</echo>
+		
+
+	</target>
+	
+	<target name="cleanImpl" depends="rel">
+		<delete includeemptydirs="true"> 
+			<fileset dir="${buildclasses}" includes="**/*"/> 
+			<fileset dir="${build}" includes="**/*"/> 
+		</delete>
+		<echo>
+			End Build....
+		</echo>
+	</target>
+
+	
+	
+<!-- Main compile -->
+<target name="mainCompile" >
+<mkdir dir="${mainsrc}/ubin" />
+<echo message="compilation of mainsrc jar"/>
+		  <javac	srcdir="${mainsrc}/mainsrc"
+		            destdir="${mainsrc}/ubin"
+					includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+	</javac>
+	<jar jarfile="${build_jar_create}/allclass.jar" 
+			 basedir="${mainsrc}/ubin"
+			 includes="**">
+    </jar>
+	</target>
+
+	
+	
+<!-- EOD START: framework + Client Compile ; Please create a new Folder "EOD"-->
+<target name="utilcompile" >
+<mkdir dir="${bestdir}/ubin" />
+<echo message="compilation of util jar"/>
+
+		  <javac		srcdir="${bestdir}/psh/impl/util"
+		            destdir="${bestdir}/ubin"
+					includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+		
+	</javac>
+	<jar jarfile="${build_jar_create}/Psh_Util.jar" 
+			 basedir="${bestdir}/ubin"
+			 includes="**">
+			 
+<!--EOD end: Create Jar file-->
+
+           </jar>
+<delete dir="${bestdir}/ubin" />
+
+	</target>
+	
+<target name="eodcomplie" >
+<mkdir dir="${eodbuildclasses}/bin" />
+<echo message="compilation of eod frameworkjar file from ${eodsrc}"/>
+
+		  <javac		srcdir="${eodsrc}/igtb/psh/impl/batch/eod"
+		            destdir="${eodbuildclasses}/bin"
+					includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+		<classpath refid="project.class.path.Notifiy"/>
+		<compilerarg value="-Xlint" />
+	</javac>
+	</target>
+
+	<target name="CopyResEOD">
+	<echo message="copy resources from ${eodcopy} to ${eodbuildclasses}"/>
+	
+	<copy todir="${eodbuildclasses}/bin" >  
+		        <fileset dir="${eodcopy}" includes="beanRefContext.xml"/>  		</copy>
+				<copy todir="${eodbuildclasses}/bin" >  
+		        <fileset dir="${eodcopy}" includes="eod-client-config.xml"/>  		</copy>
+				<copy todir="${eodbuildclasses}/bin" >  
+		        <fileset dir="${eodcopy}" includes="eod-config.xml"/>  		</copy>
+				<copy todir="${eodbuildclasses}/bin" >  
+		        <fileset dir="${eodcopy}" includes="eod-framework-config.xml"/>  		</copy>
+				<copy todir="${eodbuildclasses}/bin" >  
+		        <fileset dir="${eodcopy}" includes="eod_framework_prop.properties"/>  		</copy>
+	<!--EOD START: Create Jar file-->
+
+<echo message="create EOD jar file"/>
+		<jar jarfile="${build_jar_create}/eodframework.jar" 
+			 basedir="${eodbuildclasses}/bin"
+			 excludes="**/web/ **/client/ **/action/">
+			  <metainf  dir="${eodcopy}" includes="**/ejb-jar.xml" />
+			  <metainf  dir="${eodcopy}" includes="**/weblogic-ejb-jar.xml" />
+<!--EOD end: Create Jar file-->
+
+           </jar>
+		   <echo message="create EOD jar file"/>
+<jar jarfile="${build_jar_create}/EODUI.jar" 
+			 basedir="${eodbuildclasses}/bin"
+			 includes="**/web/ **/action/">
+			 
+<!--EOD end: Create Jar file-->
+
+           </jar>
+		<copy todir="${dirtemp}" >  
+		        <fileset dir="${build_jar_create}" includes="*eodframework.jar"/>  		</copy>	
+			<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${build_jar_create}" includes="*EODUI.jar"/>  		</copy>	
+
+<delete dir="${eodbuildclasses}/bin" />
+		
+</target>
+
+	<!-- end  of  eodframework-->
+
+<!-- start  of  eodjobsjar-->
+<target name="eodjobs" >
+<mkdir dir="${eodbuildclasses}/com/igtb/psh/impl/batch/bin" />
+
+<echo message="compilation of eodjobs file from "/>
+		  <javac		srcdir="${eodsrc}/igtb/psh/impl/batch/eod/client"
+		            destdir="${eodbuildclasses}/com/igtb/psh/impl/batch/bin"
+					excludes ="**/framework/ **/test/ "
+		            includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+	<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+		<classpath refid="project.class.path.eod"/>
+		<classpath refid="project.class.path.Notifiy"/>
+	<compilerarg value="-Xlint" />
+	</javac>
+
+<jar jarfile="${build_jar_create}/EODJobs.jar" 
+			 basedir="${eodbuildclasses}/com/igtb/psh/impl/batch/bin">
+			  
+</jar>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${build_jar_create}" includes="*EODJobs.jar"/>  		</copy>	
+
+	</target>
+<!-- end  of  eodjobsjar-->
+<!-- start of  jasperreports jar-->
+
+<target name="reportssrc" >
+<mkdir dir="${eodbuildclasses}/com/igtb/psh/bin" />
+<echo message="compilation of eodjobs file from "/>
+		  <javac		srcdir="${eodsrc}/igtb/psh/impl/reports"
+		            destdir="${eodbuildclasses}/com/igtb/psh/bin"
+					includes="**/action/"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+		
+	</javac>
+	<jar jarfile="${build_jar_create}/ReportsScreens.jar" 
+			 basedir="${eodbuildclasses}/com/igtb/psh/bin">
+</jar>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${build_jar_create}" includes="*ReportsScreens.jar"/>  		</copy>	
+
+	</target>
+	
+<!-- end  of  jasperreports jar-->
+
+<target name="Ireports" >
+<mkdir dir="${eodbuildclasses}/com/igtb/psh/bin1" />
+<echo message="compile irepot jars "/>
+		  <javac		srcdir="${eodsrc}/igtb/psh/impl/reports"
+		            destdir="${eodbuildclasses}/com/igtb/psh/bin1"
+					excludes="**/action/"
+					includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.allclass"/>
+	</javac>
+<!--<mkdir dir="${eodbuildclasses}/com/igtb/psh/bin1/resources" />-->
+
+<copy todir="${eodbuildclasses}/com/igtb/psh/bin1/com/igtb/psh/impl/reports" >  
+		        <fileset dir="${eodsrc}/igtb/psh/impl/reports/" includes="**/reportsClasses/"/>  		</copy>
+
+<!--<copy todir="${eodbuildclasses}/com/igtb/psh/bin1/resources" >  
+		        <fileset dir="${copyprop}/config/payments/common" includes="classLoader.properties"/>  		</copy>
+
+<copy todir="${eodbuildclasses}/com/igtb/psh/bin1/resources" >  
+		        <fileset dir="${copyprop}/config/payments/common" includes="destination.properties"/>  		</copy>-->
+	<jar jarfile="${build_jar_create}/JPReports.jar" 
+			 basedir="${eodbuildclasses}/com/igtb/psh/bin1">
+
+
+</jar>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${build_jar_create}" includes="*JPReports.jar"/>  		</copy>	
+
+	</target>
+	<target name="compilenotify" >
+	<mkdir dir="${eodbuildclasses}/com/igtb/bin" />
+<echo message="compile irepot jars "/>
+		  <javac		srcdir="${eodsrc}/igtb/mail"
+		            destdir="${eodbuildclasses}/com/igtb/bin"
+					excludes="**/action/"
+					includes="**/*.java"
+					failonerror="true"
+		 		    optimize="${optimize}"
+		 		 	includeantruntime="true"
+					debug="on" debuglevel="lines,vars,source"
+		>
+		<classpath refid="project.class.path"/>
+		<classpath refid="project.class.path.payment"/>
+		<!--<classpath refid="project.class.path.paymentimpl"/>-->
+		
+	</javac>
+	<jar jarfile="${build_jar_create}/Notification.jar" 
+			 basedir="${eodbuildclasses}/com/igtb/bin">
+
+
+</jar>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${build_jar_create}" includes="*Notification.jar"/>  		</copy>	
+
+	</target>
+
+<target name="copyjsp">
+
+		<mkdir dir="${dirbpsf}/WAR/BPS/image" />
+
+		<copy todir="${dirbpsf}/WAR/BPS" >  
+		        <fileset dir="${warjsp}" includes="**"/>  
+		</copy>
+		<copy todir="${dirbpsf}/WAR/BPS/scripts" >  
+		        <fileset dir="${warjs}/scripts" includes="**" />  
+		</copy>
+		<copy todir="${dirbpsf}/WAR/BPS/image" >  
+		        <fileset dir="${warimg}" includes="**" />  
+		</copy>
+
+		<copy todir="${dirbpsf}/WAR/BPS/WEB-INF" >  
+		        <fileset dir="./build/DIT/Payments/WebContent/BPS_XML" includes="**" />  
+		</copy>
+<copy todir="${dirbpsf}/WAR/ipsh/js" >  
+		        <fileset dir="${warjsp2}" includes="**" />  
+		</copy>
+<copy todir="${dirbpsf}/WAR/ipsh/jsp/add" >  
+		        <fileset dir="${warjsp1}/jsp/add" includes="**" />  
+		</copy>
+<copy todir="${dirbpsf}/WAR/ipsh/WEB-INF/classes" >  
+		        <fileset dir="${warjsp1}/WEB-INF/classes" includes="**" />  
+		</copy>
+<copy todir="${dirbpsf}/WAR/ipsh" >  
+		        <fileset dir="${warjsp1}" includes="**/*.jsp"   excludes="**/jsp/ **/WEB-INF/" />  
+		</copy>
+		<copy todir="${dirbpsf}/WAR/BPS/scripts/payments" >  
+		        <fileset dir="${paymentjs}/scripts/payments" includes="**/*.js"   excludes="**/jsp/" />  
+		</copy>
+		<copy todir="${dirbpsf}/WAR/ipsh/css" >  
+		        <fileset dir="${bpcs}" includes="**" />  
+		</copy>
+
+<copy todir="./build/PSH/WAR/ipsh/WEB-INF/classes/com/polaris/ipsh/maintenance/enquiry/action" >  
+		       <fileset dir="./build/DIT/Payments/bin/com/polaris/ipsh/maintenance/enquiry/action" includes="EnquiryAction.class"/>  
+		 </copy>
+		 
+	<copy todir="./build/PSH/WAR/ipsh/WEB-INF/classes/com/polaris/ipsh/maintenance/enquiry/action" >  
+		       <fileset dir="./build/DIT/Payments/bin/com/polaris/ipsh/maintenance/enquiry/action" includes="FileEnquiryAction.class"/>  
+		 </copy>
+		 
+	<copy todir="./build/PSH/WAR/ipsh/WEB-INF/classes/com/polaris/ipsh/maintenance/enquiry/action" >  
+		  <fileset dir="./build/DIT/Payments/bin/com/polaris/ipsh/maintenance/enquiry/action" includes="TransactionEnquiryAction.class"/>  
+		 </copy>
+
+	<copy todir="./build/PSH/WAR/ipsh/WEB-INF/classes/com/polaris/ipsh/maintenance/enquiry/action" >  
+		       <fileset dir="./build/DIT/Payments/bin/com/polaris/ipsh/baseaction" includes="BaseIPSHAction.class"/>  
+		 </copy>
+
+
+</target>
+
+<target name="configpreparation">
+<copy todir="${copyprops}/Properties" >  
+		        <fileset dir="${copyprop}/config/payments/common" includes="**"/>  		</copy>	
+<copy todir="${copyprops}/Properties" >  
+		        <fileset dir="${copyprop}/config/payments impl" includes="**"/>  		</copy>	
+<copy todir="${copyprops}/Properties">  
+		        <fileset dir="${copyprop}/config/xmls" includes="**"/>  		</copy>
+<copy todir="${copyprops}/Config" >
+		        <fileset dir="${copyprop}/PSH/APP-INF/lib/FRAMEWORK/Properties" includes="**"/></copy>
+
+<copy todir="${copyprops}/Properties" >
+		<fileset dir="${payinq}/src" includes="**/*.properties"/></copy>
+
+<copy todir="${copyprops}/Properties" >
+		<fileset dir="${payCore}/src/resources" includes="**/*.properties"/></copy>
+
+</target>
+
+<target name="copybpswars" >
+		<echo message="copy bpswar in temp "/>
+		
+<mkdir dir="./build/PSH/APP-INF/lib/tempwars" />
+
+ <war jarfile="${dirtemp}/BPS.war" webxml="${dirbpsf}/WAR/BPS/WEB-INF/web.xml">
+        <fileset dir="${dirbpsf}/WAR/BPS" includes="**/*.*"/>
+		<manifest>
+		<attribute name="Class-Path" value="APP-INF/lib/WFWeb.jar APP-INF/lib/WFCommon.jar 
+APP-INF/lib/Imaging.jar APP-INF/lib/IwAppCommon.jar 
+APP-INF/lib/IwAppDatastore.jar APP-INF/lib/IwUtil.jar APP-INF/lib/struts.jar APP-INF/lib/WFCommon.jar 
+APP-INF/lib/WFWeb.jar APP-INF/lib/bpf.jar APP-INF/lib/DEBatchUpload.jar APP-INF/lib/UserMessagesProperties.jar 
+APP-INF/lib/MessageRetriever.jar APP-INF/lib/taglibs-i18n.jar APP-INF/lib/Config.jar 
+APP-INF/lib/WorkflowEJB.jar APP-INF/lib/WFExt.jar APP-INF/lib/Imaging.jar APP-INF/lib/IwAppMessages.jar 
+APP-INF/lib/IwMaintAppCommon.jar APP-INF/lib/dwr.jar APP-INF/lib/org.json-0.0.2.jar 
+APP-INF/lib/LetterGeneration.jar APP-INF/lib/IReportServlet.jar APP-INF/lib/jasperreports-1.3.3.jar 
+APP-INF/lib/IReport.jar APP-INF/lib/intellectlogger-1.0.jar APP-INF/lib/intellectwrapper.jar 
+APP-INF/lib/WFAppCommon.jar APP-INF/lib/PAReportCommon.jar APP-INF/lib/PAReport.jar APP-INF/lib/Payments.jar APP-INF/lib/cbft.jar  APP-INF/lib/Inquiry.jar APP-INF/lib/PaymentsCore.jar"/>
+</manifest>
+ </war>
+
+</target>
+
+<target name="copywars" >
+		<echo message="copy IPSH WAR  in temp "/>
+
+ <war jarfile="${dirtemp}/ipsh.war" webxml="${dirbpsf}/WAR/ipsh/WEB-INF/web.xml">
+        <fileset dir="${dirbpsf}/WAR/ipsh" includes="**/*.*"/>
+		<manifest>
+		<attribute name="Class-Path" value=" APP-INF/lib/log4j-1.2.8.jar APP-INF/lib/struts2-core-2.1.6.jar APP-INF/lib/struts2-convention-plugin-2.1.6.jar 
+APP-INF/lib/struts2-tiles-plugin-2.1.6.jar APP-INF/lib/IPSH-Engine.jar APP-INF/lib/rsadapterspi.jar APP-INF/lib/wasutil.jar 
+APP-INF/lib/commons-validator-1.3.1.jar APP-INF/lib/commons-lang.jar  APP-INF/lib/xwork-2.1.2.jar APP-INF/lib/xml-apis.jar APP-INF/lib/tools.jar 
+APP-INF/lib/US_export_policy.jar APP-INF/lib/ognl-2.6.11.jar APP-INF/lib/freemarker-2.3.13.jar APP-INF/lib/json-simple-1.1.jar 
+APP-INF/lib/json-lib-2.2.2-jdk15.jar APP-INF/lib/struts.jar APP-INF/lib/intellectlogger-1.0.jar APP-INF/lib/commons-fileupload-1.2.1.jar 
+APP-INF/lib/commons-io-1.3.2.jar APP-INF/lib/commons-digester-1.8.1.jar APP-INF/lib/commons-collections-3.1.jar 
+APP-INF/lib/commons-beanutils-1.8.0.jar APP-INF/lib/IntellectLinkCommons.jar APP-INF/lib/Armor.jar APP-INF/lib/commons-fileupload.jar 
+APP-INF/lib/commons-vfs.jar APP-INF/lib/jce.jar APP-INF/lib/jce_policy-1_5_0.zip APP-INF/lib/jzlib-1.0.7.jar APP-INF/lib/log4j-1.2.16.jar 
+APP-INF/lib/mina-core-2.0.2.jar APP-INF/lib/slf4j-api-1.6.0.jar APP-INF/lib/slf4j-log4j12-1.6.1.jar APP-INF/lib/bcprov-jdk15-140.jar 
+APP-INF/lib/sshd-core-0.5.0.jar APP-INF/lib/sunjce_provider.jar APP-INF/lib/xpp3_min-1.1.4c.jar APP-INF/lib/xstream-1.3.1.jar APP-INF/lib/wife-ide.jar 
+APP-INF/lib/wife.jar APP-INF/lib/xmlunit1.0.jar "/>
+
+			</manifest>
+
+ </war>
+  
+  <war jarfile="${dirtemp}/ipshws.war" webxml="${dirbpsf}/WAR/ipshws/WEB-INF/web.xml">
+        <fileset dir="${dirbpsf}/WAR/ipshws" includes="**/*.*"/>
+
+ </war>
+  
+  </target>
+
+  <target name="BBdaddac" >
+<mkdir dir="${addacc}/AddAccount/src/bin/classes" />
+
+		<echo message="build envoysrc  war "/>
+        <javac srcdir="${addacc}/AddAccount/src"
+		             destdir="${addacc}/AddAccount/src/bin/classes"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>		 	
+		  </javac>		
+
+<copy todir="${addacc}/AddAccount/WebContent/WEB-INF" >  
+		        <fileset dir="${addacc}/AddAccount/src/bin" includes="**/*.class" />  
+				</copy>
+
+ <war jarfile="${dirtemp}/AddAccount.war" webxml="${addacc}/AddAccount/WebContent/WEB-INF/web.xml">
+        
+		<fileset dir="${addacc}/AddAccount/WebContent" includes="**"/>
+		  
+</war>
+ <delete dir="${addacc}/AddAccount/src/bin/classes" />
+<delete dir="${addacc}/AddAccount/src/bin" />
+ 
+ </target>
+
+ <target name="custumserv" >
+<mkdir dir="${addacc}/CustomerAdd_Service/src/bin/classes" />
+
+		<echo message="build envoysrc  war "/>
+        <javac srcdir="${addacc}/CustomerAdd_Service/src"
+		             destdir="${addacc}/CustomerAdd_Service/src/bin/classes"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>		 	
+		  </javac>		
+
+<copy todir="${addacc}/CustomerAdd_Service/WebContent/WEB-INF" >  
+		        <fileset dir="${addacc}/CustomerAdd_Service/src/bin" includes="**/*.class" />  
+				</copy>
+
+ <war jarfile="${dirtemp}/CustomerAdd_Service.war" webxml="${addacc}/CustomerAdd_Service/WebContent/WEB-INF/web.xml">
+        
+		<fileset dir="${addacc}/CustomerAdd_Service/WebContent" includes="**"/>
+		  
+</war>
+<delete dir="${addacc}/CustomerAdd_Service/src/bin/classes" />
+<delete dir="${addacc}/CustomerAdd_Service/src/bin" />
+
+</target>
+
+<target name="EditAcc" >
+<mkdir dir="${addacc}/EditAccount/src/bin/classes" />
+
+		<echo message="build EditAccount  war "/>
+        <javac srcdir="${addacc}/EditAccount/src"
+		             destdir="${addacc}/EditAccount/src/bin/classes"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>		 	
+		  </javac>		
+
+<copy todir="${addacc}/EditAccount/WebContent/WEB-INF" >  
+		        <fileset dir="${addacc}/EditAccount/src/bin" includes="**/*.class" />  
+				</copy>
+
+ <war jarfile="${dirtemp}/EditAccount.war" webxml="${addacc}/EditAccount/WebContent/WEB-INF/web.xml">
+        
+		<fileset dir="${addacc}/EditAccount/WebContent" includes="**"/>
+		  
+</war>
+<delete dir="${addacc}/EditAccount/src/bin/classes" />
+<delete dir="${addacc}/EditAccount/src/bin" />
+
+</target>
+
+<target name="EditCust" >
+<mkdir dir="${addacc}/EditCustomer/src/bin/classes" />
+
+		<echo message="build EditCustomer  war "/>
+        <javac srcdir="${addacc}/EditCustomer/src"
+		             destdir="${addacc}/EditCustomer/src/bin/classes"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     classpathref="project.class.path"
+		 			 optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>		 	
+		  </javac>		
+
+<copy todir="${addacc}/EditCustomer/WebContent/WEB-INF" >  
+		        <fileset dir="${addacc}/EditCustomer/src/bin" includes="**/*.class" />  
+				</copy>
+
+ <war jarfile="${dirtemp}/EditCustomer.war" webxml="${addacc}/EditCustomer/WebContent/WEB-INF/web.xml">
+        
+		<fileset dir="${addacc}/EditCustomer/WebContent" includes="**"/>
+		  
+</war>
+
+<delete dir="${addacc}/EditCustomer/src/bin/classes" />
+<delete dir="${addacc}/EditCustomer/src/bin" />
+</target>
+
+<target name="PaymentInquiry">
+<mkdir dir="${payinq}/src/bin/classes" />
+       <echo message="build PaymentInquiry war "/>
+        <javac srcdir="${payinq}/src"
+	             destdir="${payinq}/src/bin/classes"
+	             includes="**/*.java"
+		 failonerror="true"
+	             optimize="${optimize}"
+		 includeantruntime="false"
+		 debug="on" debuglevel="lines,vars,source">	
+        <classpath refid="project.class.path"/>
+        <classpath refid="project.class.path.payment"/>
+        </javac>	
+        <copy todir="${payinq}/WebContent/WEB-INF/classes" >  
+	        <fileset dir="${payinq}/src/bin/classes" includes="**/action/ **/utility/" excludes="**/common/ **/dao/ **/dto/ **/data/ "/> 
+	</copy>
+
+		<copy todir="${payinq}/WebContent/WEB-INF/classes" >  
+	        <fileset dir="${payinq}/src" includes="**/struts.xml/ **/fileType.properties/ " /> 
+	    </copy>
+        <war jarfile="${dirtemp}/PaymentInquiry.war" webxml="${payinq}/WebContent/WEB-INF/web.xml">
+              <fileset dir="${payinq}/WebContent" includes="**"/>
+        </war>
+</target>
+
+
+
+<target name="paymentMangement">
+<mkdir dir="${paymgt}/src/bin/classes" />
+
+		<echo message="build EditCustomer  war "/>
+        <javac srcdir="${paymgt}/src"
+		             destdir="${paymgt}/src/bin/classes"
+		             includes="**/*.java"
+					 failonerror="true"
+		 		     optimize="${optimize}"
+		 		 	  includeantruntime="false"
+					  debug="on" debuglevel="lines,vars,source"
+		 	>	
+			<classpath refid="project.class.path"/>
+		    <classpath refid="project.class.path.payment"/>
+
+		  </javac>	
+<copy todir="${paymgt}/WebContent/WEB-INF/classes" >  
+		        <fileset dir="${paymgt}/src/bin/classes" includes="**/*.class"/>  		</copy>
+
+<war jarfile="${dirtemp}/PaymentManagement.war" webxml="${paymgt}/WebContent/WEB-INF/web.xml">
+        
+		<fileset dir="${paymgt}/WebContent" includes="**" excludes="**/lib/"/>
+</war>
+
+</target>
+
+<target name="copyejbs" >
+		<echo message="copy bpswar in temp "/>
+		<copy todir="${dirtemp}" >  
+		        <fileset dir="${dirbpsf}" includes="*.jar"/>  		</copy>
+
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${dirapp}"  />  		</copy>
+		
+
+</target>
+
+<target name="copypaymentjars" >
+		<echo message="copy paymentjars in ear "/>
+		<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${dirbpsf}/APP-INF/lib/Payments" includes="*.jar" />  		</copy>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+	<fileset dir="${dirbpsf}/APP-INF/lib/IBAN" includes="*.jar" />  		</copy>
+
+<copy todir="${dirtemp}/APP-INF/lib" >  
+	<fileset dir="${dirbpsf}/APP-INF/lib/PaymentInquiry" includes="*.jar" /></copy>
+<copy todir="${dirtemp}/APP-INF/lib" >  
+		        <fileset dir="${dirbpsf}/APP-INF/lib/PaymentsCore" includes="*.jar" />  		</copy>
+</target>
+
+
+<target name="prepareIPSHEAR" >
+		<echo message="prepare the ear "/>
+		<mkdir dir="${builddir}" />
+<ear destfile="${builddir}/IPSH.ear" appxml="${copyprop}/config/IPS_EAR/application.xml">
+      <fileset dir="${dirtemp}" includes="**"/>
+	  <metainf  dir="${copyprop}/config/IPS_EAR" includes="application.xml" />
+			  <metainf  dir="${copyprop}/config/IPS_EAR" includes="weblogic-application.xml" />
+			  <metainf  dir="${copyprop}/config/IPS_EAR" includes="ibm-application-bnd.xmi" />
+			  <metainf  dir="${copyprop}/config/IPS_EAR" includes="ibm-application-ext.xmi" />
+    </ear>
+</target>
+
+<!--
+<target name="copy">
+ 
+ <echo message="Uploading started"/>
+
+ <echo message="Uploading EAR With Credentials"/>
+  <echo message="Upload EAR from local to Remote Machine"/>
+ <scp todir="${Rusername}:${Rpassword}@${Rhost}:/usr1/${Rusername}/GTB_HOME/IPSH_HOME/EAR"  trust="true">
+     <fileset dir="${builddir}" includes="**/*.ear"/>
+     
+</scp>
+ 
+ <echo message="Copying end"/>
+ </target>
+-->
+
+</project>
