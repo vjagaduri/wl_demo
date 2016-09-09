@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+
+<!--
+Version     : 1.0	
+Author    : Srinivas.Tanigundala 
+Description :BaseEar Build process
+DATE   : 23/10/15
+Modified  : Reena Jadhav
+-->
+
+<project default="main" basedir=".">
+   <!--craete the app-inf lib -->
+    <property name ="dirjar" location="./build/PSH/APP-INF/lib/ARMOR"/>
+	<property name ="dirapp" location="./build/PSH/APP-INF/lib/tempappinf"/>
+	<property name ="dirapplet" location="./build/PSH/APP-INF/lib/FRAMEWORK/"/>
+	<property name ="dirthirdparty" location="./build/PSH/APP-INF/lib/Thirdparty"/>
+	<property name ="dirbpsf" location="./build/PSH"/>
+	<property name ="dirtemp" location="./build/PSH/APP-INF/lib/tempwars"/>
+    <property name ="builddir"    location="./build/artifact" />
+	<property name ="src" location="./build/DIT/Payments/src/com" />
+	<property name ="mainsrc" location="./build/DIT" />
+
+    <property name="payCore" location="./build/DIT/PaymentsCore"/>
+	<property name ="srcPaymentsCore" location="./build/DIT/PaymentsCore/src/com" />
+	<property name ="InquirySrc" location="./build/DIT/PaymentInquiry/src/com" />
+	
+	<property name ="buildsrc"    location="./build/DIT/Payments/bin" />
+	<property name ="buildPaymentsCore"    location="./build/DIT/PaymentsCore/bin" />
+	<property name ="buildPaymentInquiry"    location="./build/DIT/PaymentInquiry/bin" />
+	<property name="payinq"	location="./build/DIT/PaymentInquiry"/>
+	<property name ="buildjars"    location="./build/lib" />
+	<property name="copy_HOME" location="./build/Build Scripts/DIT/Payments/src/com/igtb/psh" />
+    <property name="build_create" location="./build/Build Scripts/build" />
+    <property name="build_jar_create" location="./build/Build Scripts/build/jars" />
+    <property name="build_classes_create" location="./build/Build Scripts/build/classes" />  
+    <property name="srcimpl"	location="./build/Build Scripts/DIT/Payments"/>
+	<property name="prophome"	location="./build/Build Scripts/DIT/Properties"/>
+	<property name="release"	location="./build/Build Scripts/Release"/>
+	<property name="buildclasses"	location="./build/Build Scripts/build/classes"/>
+    <property name="buildclassesmdb"	location="./build/Build Scripts/build/classes"/>
+	<property name="eodsrc"	location="./build/DIT/Payments/src/com"/>
+	<property name="eodbuildclasses"	location="./build/DIT/Payments/src"/>
+	<property name="ibansrc"	location="./build/TEST_IBAN"/>
+    <property name="ibanclasses"	location="./build/TEST_IBAN/bin"/>
+	<property name="Extrajars"	location="./build/PSH/APP-INF/lib"/>
+	<property name="bestdir"	location="./build/DIT/Payments/src/com/igtb"/>
+	<property name="warjsp"	location="./build/DIT/Payments/WebContent/BPS_jsp"/>
+	<property name="warjs"	location="./build/DIT/Payments/WebContent/BPS_js"/>
+	<property name="paymentjs"	location="./build/DIT/Payments/WebContent/Payments_js"/>
+	<property name="warimg"	location="./build/DIT/Payments/WebContent/image"/>
+	<property name="warjsp1"	location="./build/DIT/Payments/WebContent/ipsh_jsp"/>
+	<property name="warjsp2"	location="./build/DIT/Payments/WebContent/ipsh_js"/>
+	<property name="eodcopy"	location="./build/DIT/Payments/src/resources"/>
+	<property name="copyprop"	location="./build"/>
+	<property name="copyprops"	location="./build/PSH/APP-INF/lib/FRAMEWORK"/>
+	<property name="aggrtn"	location="./build/DIT/Payments/src/com/igtb/aggregation"/>
+	<property name="buildjsp"	location="./build/DIT/Payments/WebContent"/>
+	<property name="ibanclasses"	location="./build/TEST_IBAN/bin"/>
+	<property name="bpcs"	location="./build/DIT/Payments/WebContent/BPS_css"/>
+	<property name="addacc"	location="./build/DIT/BBD/Service"/>
+	<property name="paymgt"	location="./build/DIT/PaymentManagement"/>
+
+
+	<target name="main" >
+		
+		<antcall target="copyarmor" /> 
+		<antcall target="configpreparation" /> 
+		<antcall target="copyframework" />
+		<antcall target="copythirdparty" />
+		<antcall target="copyNotRequired" />
+	   	<antcall target="copy_HOME" />
+        <antcall target="prop_HOME" />
+		<antcall target="build_create1" />
+	    <antcall target="build_jar_create1" />
+	    <antcall target="build_classes_create1" />
+
+	</target>
+
+
+	<target name="copyarmor" >
+		<echo message="copy armor jars in lib folder "/>
+		<mkdir dir="./build/PSH/APP-INF/lib/tempappinf" />
+		<copy todir="${dirapp}" >  
+		        <fileset dir="${dirjar}" includes="**/*.jar"/>  		
+		</copy>
+	</target>
+
+	<target name="configpreparation">
+		<copy todir="${copyprops}/Properties" >  
+		        <fileset dir="${copyprop}/config/payments/common" includes="**"/>  		
+		</copy>	
+		<copy todir="${copyprops}/Properties" >  
+		        <fileset dir="${copyprop}/config/payments impl" includes="**"/>  		
+		</copy>	
+		<copy todir="${copyprops}/Properties">  
+		        <fileset dir="${copyprop}/config/xmls" includes="**"/>  		
+		</copy>
+		<copy todir="${copyprops}/Config" >
+		        <fileset dir="${copyprop}/PSH/APP-INF/lib/FRAMEWORK/Properties" includes="**"/>
+		</copy>
+		<copy todir="${copyprops}/Properties" >
+				<fileset dir="${payinq}/src" includes="**/*.properties"/>
+		</copy>
+		<copy todir="${copyprops}/Properties" >
+				<fileset dir="${payCore}/src/resources" includes="**/*.properties"/>
+		</copy>
+	</target>
+
+	<target name="copyframework" >
+		<echo message="create the db appletjar "/>
+		<jar jarfile="${dirapp}/DBApplet.jar" basedir="${dirapplet}/DBApplet"></jar>
+		<echo message="create the db DBCommonjar "/>
+		<jar jarfile="${dirapp}/DBCommon.jar" basedir="${dirapplet}/DBCommon"></jar>
+		<echo message="create the db DBWebjar "/>
+		<jar jarfile="${dirapp}/DBWeb.jar" basedir="${dirapplet}/DBWeb"></jar>
+		<echo message="create the db DEBatchUploadjar "/>
+		<jar jarfile="${dirapp}/DEBatchUpload.jar" basedir="${dirapplet}/DEBatchUpload"></jar>
+		<echo message="create the db ExchangeRate "/>
+		<jar jarfile="${dirapp}/ExchangeRate.jar" basedir="${dirapplet}/ExchangeRate"></jar>
+		<echo message="create the db IntellectLinkClientService "/>
+		<jar jarfile="${dirapp}/IntellectLinkClientService.jar" basedir="${dirapplet}/IntellectLinkClientService"></jar>
+		<echo message="create the db IntellectLinkCommon "/>
+		<jar jarfile="${dirapp}/IntellectLinkCommon.jar" basedir="${dirapplet}/IntellectLinkCommon"></jar>
+		<echo message="create the db IntellectLinkServer "/>
+		<jar jarfile="${dirapp}/IntellectLinkServer.jar" basedir="${dirapplet}/IntellectLinkServer"></jar>
+		<echo message="create the db intellectlogger-1.0 "/>
+		<jar jarfile="${dirapp}/intellectlogger-1.0.jar" basedir="${dirapplet}/intellectlogger-1.0"></jar>
+		<echo message="create the db intellectwrapper.0 "/>
+		<jar jarfile="${dirapp}/intellectwrapper.jar" basedir="${dirapplet}/intellectwrapper"></jar>
+		<echo message="create the db IPSH-Engine "/>
+		<jar jarfile="${dirapp}/IPSH-Engine.jar" basedir="${dirapplet}/IPSH-Engine"></jar>
+		<echo message="create the db IPSHGateway "/>
+		<jar jarfile="${dirapp}/IPSHGateway.jar" basedir="${dirapplet}/IPSHGateway"></jar>
+		<echo message="create the db iqa "/>
+		<jar jarfile="${dirapp}/iqa.jar" basedir="${dirapplet}/iqa"></jar>
+		<echo message="create the db IwAppCommon "/>
+		<jar jarfile="${dirapp}/IwAppCommon.jar" basedir="${dirapplet}/IwAppCommon"></jar>
+		<echo message="create the db IwAppDataStore "/>
+		<jar jarfile="${dirapp}/IwAppDataStore.jar" basedir="${dirapplet}/IwAppDataStore"></jar>
+		<echo message="create the db IwAppEntity "/>
+		<jar jarfile="${dirapp}/IwAppEntity.jar" basedir="${dirapplet}/IwAppEntity"></jar>
+		<echo message="create the db IwAppMessages "/>
+		<jar jarfile="${dirapp}/IwAppMessages.jar" basedir="${dirapplet}/IwAppMessages"></jar>
+		<echo message="create the db IwAppUtil "/>
+		<jar jarfile="${dirapp}/IwAppUtil.jar" basedir="${dirapplet}/IwAppUtil"></jar>
+		<echo message="create the db IwCommon "/>
+		<jar jarfile="${dirapp}/IwCommon.jar" basedir="${dirapplet}/IwCommon"></jar>
+		<echo message="create the db IWCTSHANDOFF "/>
+		<jar jarfile="${dirapp}/IWCTSHANDOFF.jar" basedir="${dirapplet}/IWCTSHANDOFF"></jar>
+		<echo message="create the db IwEntity "/>
+		<jar jarfile="${dirapp}/IwEntity.jar" basedir="${dirapplet}/IwEntity"></jar>
+		<echo message="create the db IwExportTable "/>
+		<jar jarfile="${dirapp}/IwExportTable.jar" basedir="${dirapplet}/IwExportTable"></jar>
+		<echo message="create the db IwFactory "/>
+		<jar jarfile="${dirapp}/IwFactory.jar" basedir="${dirapplet}/IwFactory"></jar>
+		<echo message="create the db IwMaintAppCommon "/>
+		<jar jarfile="${dirapp}/IwMaintAppCommon.jar" basedir="${dirapplet}/IwMaintAppCommon"></jar>
+		<echo message="create the db IwMessages "/>
+		<jar jarfile="${dirapp}/IwMessages.jar" basedir="${dirapplet}/IwMessages"></jar>
+		<echo message="create the db IwUtil "/>
+		<jar jarfile="${dirapp}/IwUtil.jar" basedir="${dirapplet}/IwUtil"></jar>
+		<echo message="create the db LetterGeneration "/>
+		<jar jarfile="${dirapp}/LetterGeneration.jar" basedir="${dirapplet}/LetterGeneration"></jar>
+		<echo message="create the db MLCommon "/>
+		<jar jarfile="${dirapp}/MLCommon.jar" basedir="${dirapplet}/MLCommon"></jar>
+		<echo message="create the db MLWeb "/>
+		<jar jarfile="${dirapp}/MLWeb.jar" basedir="${dirapplet}/MLWeb"></jar>
+		<echo message="create the db PAReport "/>
+		<jar jarfile="${dirapp}/PAReport.jar" basedir="${dirapplet}/PAReport"></jar>
+		<echo message="create the db PAReportCommon "/>
+		<jar jarfile="${dirapp}/PAReportCommon.jar" basedir="${dirapplet}/PAReportCommon"></jar>
+		<echo message="create the db ReportDependency "/>
+		<jar jarfile="${dirapp}/ReportDependency.jar" basedir="${dirapplet}/ReportDependency"></jar>
+		<echo message="create the db ServiceUtil "/>
+		<jar jarfile="${dirapp}/ServiceUtil.jar" basedir="${dirapplet}/ServiceUtil"></jar>
+		<echo message="create the db UserMessagesProperties "/>
+		<jar jarfile="${dirapp}/UserMessagesProperties.jar" basedir="${dirapplet}/UserMessagesProperties"></jar>
+		<echo message="create the db vigilCommon "/>
+		<jar jarfile="${dirapp}/vigilCommon.jar" basedir="${dirapplet}/vigilCommon"></jar>
+		<echo message="create the db vigilGiServer "/>
+		<jar jarfile="${dirapp}/vigilGiServer.jar" basedir="${dirapplet}/vigilGiServer"></jar>
+		<echo message="create the db WFAppCommon "/>
+		<jar jarfile="${dirapp}/WFAppCommon.jar" basedir="${dirapplet}/WFAppCommon"></jar>
+		<echo message="create the db WFCommon "/>
+		<jar jarfile="${dirapp}/WFCommon.jar" basedir="${dirapplet}/WFCommon"></jar>
+		<echo message="create the db WFExt "/>
+		<jar jarfile="${dirapp}/WFExt.jar" basedir="${dirapplet}/WFExt"></jar>
+		<echo message="create the db WFWeb "/>
+		<jar jarfile="${dirapp}/WFWeb.jar" basedir="${dirapplet}/WFWeb"></jar>
+		<echo message="create the db Config "/>
+		<jar jarfile="${dirapp}/Config.jar" basedir="${copyprops}/Config"></jar>
+	</target>
+
+	<target name="copythirdparty" >
+		<echo message="copy thirdparty jars in lib folder "/>
+		<copy todir="${dirapp}" >  
+		        <fileset dir="${dirthirdparty}" includes="**"/>
+		</copy>
+	</target>
+
+	<target name="copyNotRequired" >
+		<echo message="copy extra  jars in lib folder "/>
+		<copy todir="${dirapp}" >  
+		        <fileset dir="${Extrajars}/NotRequired" includes="**"/>
+		</copy>
+	</target>
+
+	<target name="copy_HOME">
+		<echo message="copy_HOME Started"/>
+        <copy todir="./build/Build Scripts/DIT/Payments/src/com/igtb" >  
+		        <fileset dir="${bestdir}"  excludes="**/batch/ **/reports/ **/mail/ **/deliverable/ **/sqlbuilder/ **/simulator/ **/sql/ **/jsp/"/> 
+		</copy>
+		<echo message="copy_HOME ended"/>
+	</target>
+
+	<target name="prop_HOME">
+		<echo message="PROP_HOME Started"/>
+		<copy todir="./build/Build Scripts/DIT/Payments/src/Properties" >  
+		        <fileset dir="./build/DIT/Payments/src/com/igtb/psh/impl/common/resources" includes="*.properties" />  
+		</copy>
+		<copy todir="./build/Build Scripts/DIT/Payments/src/Properties" >  
+		        <fileset dir="./build/DIT/Payments/src/com/igtb/psh/impl/interfaces/resources" includes="*.properties" />  
+		</copy>
+		<echo message="PROP_HOME ended"/>
+	</target>
+
+	<target name="build_create1">
+		<echo message="creating the build" />
+		<mkdir dir="${build_create}" />
+	</target>
+
+	<target name="build_jar_create1">
+		<echo message="creating the build and jar" />
+		<mkdir dir="${build_jar_create}" />
+	</target>
+
+	<target name="build_classes_create1">
+		<echo message="creating the build and classes" />
+		<mkdir dir="${build_classes_create}" />
+	</target>
+
+</project>
